@@ -11,5 +11,31 @@
         .bindPopup('This is a sample popup. You can put any html structure in this including extra flight data. You can also swap this icon out for a custom icon. Some png files have been provided for you to use if you wish.')
         .openPopup();
 
-
+    fetch('https://prog2700.onrender.com/opensky')
+    .then((response) => response.json())
+    .then((json) => {
+        console.log(json.states.filter(flight => flight[2] == "Canada").map(flight => ({
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [flight[5], flight[6]]
+            },
+            "properties": {
+                "name": flight[1]
+            }
+        })))
+        var geoJson = {
+            "type": "FeatureCollection",
+            "features": json.states.filter(flight => flight[2] == "Canada").map(flight => ({
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [flight[5], flight[6]]
+            },
+            "properties": {
+                "name": flight[1]
+            }
+        }))}
+        L.geoJSON(geoJson).addTo(map)
+    })
 })()
